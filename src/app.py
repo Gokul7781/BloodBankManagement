@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates")
 app.secret_key = "supersecretkey"
 
 
 # Database connection function
 def get_db_connection():
-    conn = sqlite3.connect('blood_bank.db')
+    db_path = os.path.join(os.path.dirname(__file__), '../database/blood_bank_database.db')
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
