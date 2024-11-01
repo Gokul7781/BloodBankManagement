@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+        h1 { text-align: center; }
+        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 10px; margin-top: 10px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #218838; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        .alert { padding: 10px; margin-bottom: 15px; color: #fff; background-color: #28a745; border-radius: 5px; }
+        .hidden { display: none; }
+        .button-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Blood Bank Management</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="button-group">
+        <button onclick="showSection('donateForm')">Donate Blood</button>
+        <button onclick="showSection('requestForm')">Request Blood</button>
+        <button onclick="showSection('inventorySection')">View Blood Inventory</button>
+    </div>
+
+    <!-- Donation Form -->
+    <form id="donateForm" action="{{ url_for('donate') }}" method="POST" class="hidden">
+        <h2>Donate Blood</h2>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" name="age" id="age" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="text" name="phone" id="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="blood_type">Blood Type:</label>
+            <select name="blood_type" id="blood_type" required>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity (ml):</label>
+            <input type="number" name="quantity" id="quantity" required>
+        </div>
+        <button type="submit">Donate</button>
+    </form>
+
+    <!-- Blood Request Form -->
+    <form id="requestForm" action="{{ url_for('request_blood') }}" method="POST" class="hidden">
+        <h2>Request Blood</h2>
+        <div class="form-group">
+            <label for="req_name">Name:</label>
+            <input type="text" name="name" id="req_name" required>
+        </div>
+        <div class="form-group">
+            <label for="req_age">Age:</label>
+            <input type="number" name="age" id="req_age" required>
+        </div>
+        <div class="form-group">
+            <label for="req_phone">Phone Number:</label>
+            <input type="text" name="phone" id="req_phone" required>
+        </div>
+        <div class="form-group">
+            <label for="req_blood_type">Blood Type:</label>
+            <select name="blood_type" id="req_blood_type" required>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="req_quantity">Quantity (ml):</label>
+            <input type="number" name="quantity" id="req_quantity" required>
+        </div>
+        <button type="submit">Request</button>
+    </form>
+
+    <!-- Blood Inventory Section -->
+    <div id="inventorySection" class="hidden">
+        <h2>Blood Inventory</h2>
+        <table>
+            <tr>
+                <th>Blood Type</th>
+                <th>Quantity (ml)</th>
+                <th>Donor Name</th>
+            </tr>
+            {% for blood in blood_data %}
+            <tr>
+                <td>{{ blood.blood_type }}</td>
+                <td>{{ blood.quantity }}</td>
+                <td>{{ blood.donor_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        document.getElementById("donateForm").classList.add("hidden");
+        document.getElementById("requestForm").classList.add("hidden");
+        document.getElementById("inventorySection").classList.add("hidden");
+
+        // Show selected section
+        document.getElementById(sectionId).classList.remove("hidden");
+    }
+</script>
+
+</body>
+</html>
